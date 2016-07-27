@@ -20,7 +20,7 @@ namespace LoggingElastic
             var config = SerilogConfig.GetConfiguration("MyService");
 
             Log.Logger = config
-             //   .WriteTo.ColoredConsole()
+                .WriteTo.ColoredConsole()
                 .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new[] {new Uri("http://172.30.110.43:9200/")})
                 {
                     AutoRegisterTemplate = true,

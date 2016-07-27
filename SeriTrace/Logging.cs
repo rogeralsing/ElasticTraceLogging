@@ -2,14 +2,13 @@
 using System.Collections.Immutable;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
 namespace SeriTrace
 {
-    [Serializable]
     public class Span
     {
         public Span(string traceId, string parentId, string spanId)
@@ -33,22 +32,18 @@ namespace SeriTrace
             return enc.Substring(0, 22);
         }
 
-        private sealed class Wrapper : MarshalByRefObject
-        {
-            public ImmutableStack<Span> Value { get; set; }
-        }
-
+        private static readonly AsyncLocal<ImmutableStack<Span>> CallContext = new AsyncLocal<ImmutableStack<Span>>();
         private static ImmutableStack<Span> CurrentContext
         {
             get
             {
-                var ret = CallContext.LogicalGetData(Name) as Wrapper;
-                return ret == null ? CreateEmptyContext() : ret.Value;
+                var ret = CallContext.Value;
+                return ret ?? CreateEmptyContext();
             }
 
             set
             {
-                CallContext.LogicalSetData(Name, new Wrapper { Value = value });
+                CallContext.Value = value;
             }
         }
 

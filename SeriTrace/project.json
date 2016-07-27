@@ -22,7 +22,8 @@
       "imports": "dnxcore50",
       "dependencies": {
         "NETStandard.Library": "1.6.0",
-        "Microsoft.CSharp": "4.0.1"
+        "Microsoft.CSharp": "4.0.1",
+        "System.Net.NameResolution": "4.0.0"
       }
     },
     "net460": {
