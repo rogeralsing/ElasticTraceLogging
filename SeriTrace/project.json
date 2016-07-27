@@ -1,0 +1,36 @@
+﻿{
+  "version": "0.0.1-*",
+  "description": "SeriTrace",
+  "authors": [
+    "Roger Johansson"
+  ],
+  "packOptions": {
+    "tags": [
+      "Serilog",
+      "Tracing"
+    ],
+    "projectUrl": "https://github.com/rogeralsing/SeriTrace",
+    "licenseUrl": "https://github.com/rogeralsing/SeriTrace/blob/master/LICENSE",
+    "iconUrl": ""
+  },
+  "dependencies": {
+    "Serilog": "2.1.0",
+    "System.Collections.Immutable": "1.2.0"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50",
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "Microsoft.CSharp": "4.0.1"
+      }
+    },
+    "net460": {
+      "imports": "dotnet5.4",
+      "dependencies": {}
+    }
+  },
+  "buildOptions": {
+    "allowUnsafe": true
+  }
+}

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ElasticTrace;
+using SeriTrace;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
 

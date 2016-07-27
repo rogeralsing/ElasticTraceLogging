@@ -7,7 +7,7 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace ElasticTrace
+namespace SeriTrace
 {
     [Serializable]
     public class Span
@@ -29,7 +29,7 @@ namespace ElasticTrace
        
         private static string Encode(Guid guid)
         {
-            string enc = Convert.ToBase64String(guid.ToByteArray());
+            var enc = Convert.ToBase64String(guid.ToByteArray());
             return enc.Substring(0, 22);
         }
 
@@ -55,7 +55,7 @@ namespace ElasticTrace
         private static ImmutableStack<Span> CreateEmptyContext()
         {
             var stack = ImmutableStack.Create<Span>();
-            stack = stack.Push(new Span("123","","Root"));
+            stack = stack.Push(new Span("root trace","","root span"));
             return stack;
         }
 
