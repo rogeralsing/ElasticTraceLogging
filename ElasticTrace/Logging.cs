@@ -7,7 +7,7 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace LoggingElastic
+namespace ElasticTrace
 {
     [Serializable]
     public class Span
@@ -26,10 +26,7 @@ namespace LoggingElastic
     {
         private static readonly string Name = Guid.NewGuid().ToString("N");
 
-        static Spans()
-        {
-        }
-
+       
         private static string Encode(Guid guid)
         {
             string enc = Convert.ToBase64String(guid.ToByteArray());
@@ -65,6 +62,7 @@ namespace LoggingElastic
         public static IDisposable ContinueSpan(string traceId,string parentId,string spanId)
         {
             CurrentContext = CurrentContext.Push(new Span(traceId, parentId, spanId));
+            Log.Information("Continuing Span");
             return new PopWhenDisposed();
         }
 
@@ -98,14 +96,14 @@ namespace LoggingElastic
                 if (_disposed)
                     return;
                 var duration = DateTime.UtcNow - _start;
-                Log.Information("End span, Duration {duration}", duration);
+                Log.Information("End span, Duration {elapsed} ms", duration.TotalMilliseconds);
                 Pop();
                 _disposed = true;
             }
         }
     }
 
-    public class Zipkin : ILogEventEnricher
+    public class TraceEnricher : ILogEventEnricher
     {
 
         public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
@@ -119,14 +117,14 @@ namespace LoggingElastic
 
     public static class SerilogConfig
     {
-        public static LoggerConfiguration GetConfiguration()
+        public static LoggerConfiguration GetConfiguration(string application)
         {
             var config = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.WithProperty("HostName", Dns.GetHostName())
-                .Enrich.WithProperty("Application", "MyApp")
-                .Enrich.WithProperty("ApplicationInstanceID", "MyApp_1")
-                .Enrich.With<Zipkin>();
+                .Enrich.WithProperty("Application", application)
+                .Enrich.WithProperty("ApplicationInstanceID", application + "_" + Dns.GetHostName())
+                .Enrich.With<TraceEnricher>();
             return config;
         }
     }
